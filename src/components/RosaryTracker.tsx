@@ -10,25 +10,25 @@ const RosaryTracker = () => {
   const [totalRosaries, setTotalRosaries] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Load from database and set up real-time updates
+  // Load shared total from database and subscribe to updates
   useEffect(() => {
-    const fetchTotal = async () => {
-      const { data } = await supabase
+    const loadInitialData = async () => {
+      const { data, error } = await supabase
         .from('prayer_counters')
         .select('total_value')
         .eq('counter_type', 'rosary_count')
         .single();
       
-      if (data) {
-        setTotalRosaries(data.total_value);
+      if (data && !error) {
+        setTotalRosaries(Number(data.total_value));
       }
     };
 
-    fetchTotal();
+    loadInitialData();
 
-    // Set up real-time subscription
+    // Subscribe to real-time updates
     const channel = supabase
-      .channel('rosary-updates')
+      .channel('schema-db-changes')
       .on(
         'postgres_changes',
         {
@@ -38,8 +38,8 @@ const RosaryTracker = () => {
           filter: 'counter_type=eq.rosary_count'
         },
         (payload) => {
-          if (payload.new && typeof payload.new.total_value === 'number') {
-            setTotalRosaries(payload.new.total_value);
+          if (payload.new) {
+            setTotalRosaries(Number(payload.new.total_value));
           }
         }
       )
@@ -56,8 +56,7 @@ const RosaryTracker = () => {
 
     setIsAnimating(true);
     
-    setTimeout(async () => {
-      // Update database
+    try {
       const { error } = await supabase
         .from('prayer_counters')
         .update({ 
@@ -65,13 +64,16 @@ const RosaryTracker = () => {
         })
         .eq('counter_type', 'rosary_count');
 
-      if (error) {
-        console.error('Error updating rosary count:', error);
+      if (!error) {
+        setInputValue('');
       }
+    } catch (error) {
+      console.error('Error updating rosary count:', error);
+    }
 
-      setInputValue('');
+    setTimeout(() => {
       setIsAnimating(false);
-    }, 200);
+    }, 500);
   };
 
   return (
