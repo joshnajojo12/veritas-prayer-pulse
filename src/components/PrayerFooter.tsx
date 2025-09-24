@@ -32,7 +32,7 @@ const PrayerFooter = () => {
         </div>
         
         <p className="text-muted-foreground text-sm">
-          Jesus Youth • United in Prayer
+          Jesus Youth Pala
         </p>
       </div>
     </footer>

@@ -29,9 +29,13 @@ const PrayerHeader = () => {
           </div>
         </div>
         <div className="text-center">
-        <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-4 md:mb-6" style={{ fontFamily: 'Dancing Script, Brush Script MT, cursive' }}>
-          Veritas'25
-        </h1>
+        <h1 
+  className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black bg-gradient-primary bg-clip-text text-transparent mb-4 md:mb-6" 
+  style={{ fontFamily: 'Dancing Script, Brush Script MT, cursive' }}
+>
+  Veritas'25
+</h1>
+
         
         <div 
           className={`transition-all duration-1200 ease-out delay-300 ${
