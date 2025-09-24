@@ -14,7 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      prayer_counters: {
+        Row: {
+          counter_type: string
+          created_at: string
+          id: string
+          total_value: number
+          updated_at: string
+        }
+        Insert: {
+          counter_type: string
+          created_at?: string
+          id?: string
+          total_value?: number
+          updated_at?: string
+        }
+        Update: {
+          counter_type?: string
+          created_at?: string
+          id?: string
+          total_value?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

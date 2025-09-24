@@ -3,33 +3,72 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Heart, Plus } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const RosaryTracker = () => {
   const [inputValue, setInputValue] = useState('');
   const [totalRosaries, setTotalRosaries] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Load from localStorage on mount
+  // Load from database and set up real-time updates
   useEffect(() => {
-    const saved = localStorage.getItem('rosary-count');
-    if (saved) {
-      setTotalRosaries(parseInt(saved, 10));
-    }
+    const fetchTotal = async () => {
+      const { data } = await supabase
+        .from('prayer_counters')
+        .select('total_value')
+        .eq('counter_type', 'rosary_count')
+        .single();
+      
+      if (data) {
+        setTotalRosaries(data.total_value);
+      }
+    };
+
+    fetchTotal();
+
+    // Set up real-time subscription
+    const channel = supabase
+      .channel('rosary-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'prayer_counters',
+          filter: 'counter_type=eq.rosary_count'
+        },
+        (payload) => {
+          if (payload.new && typeof payload.new.total_value === 'number') {
+            setTotalRosaries(payload.new.total_value);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
-  // Save to localStorage when total changes
-  useEffect(() => {
-    localStorage.setItem('rosary-count', totalRosaries.toString());
-  }, [totalRosaries]);
-
-  const handleAdd = () => {
+  const handleAdd = async () => {
     const value = parseInt(inputValue, 10);
     if (isNaN(value) || value <= 0) return;
 
     setIsAnimating(true);
     
-    setTimeout(() => {
-      setTotalRosaries(prev => prev + value);
+    setTimeout(async () => {
+      // Update database
+      const { error } = await supabase
+        .from('prayer_counters')
+        .update({ 
+          total_value: totalRosaries + value 
+        })
+        .eq('counter_type', 'rosary_count');
+
+      if (error) {
+        console.error('Error updating rosary count:', error);
+      }
+
       setInputValue('');
       setIsAnimating(false);
     }, 200);

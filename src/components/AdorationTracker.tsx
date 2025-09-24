@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Clock, Plus } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const AdorationTracker = () => {
   const [inputValue, setInputValue] = useState('');
@@ -11,29 +12,69 @@ const AdorationTracker = () => {
   const [totalMinutes, setTotalMinutes] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Load from localStorage on mount
+  // Load from database and set up real-time updates
   useEffect(() => {
-    const saved = localStorage.getItem('adoration-minutes');
-    if (saved) {
-      setTotalMinutes(parseInt(saved, 10));
-    }
+    const fetchTotal = async () => {
+      const { data } = await supabase
+        .from('prayer_counters')
+        .select('total_value')
+        .eq('counter_type', 'adoration_minutes')
+        .single();
+      
+      if (data) {
+        setTotalMinutes(data.total_value);
+      }
+    };
+
+    fetchTotal();
+
+    // Set up real-time subscription
+    const channel = supabase
+      .channel('adoration-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'prayer_counters',
+          filter: 'counter_type=eq.adoration_minutes'
+        },
+        (payload) => {
+          if (payload.new && typeof payload.new.total_value === 'number') {
+            setTotalMinutes(payload.new.total_value);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
-  // Save to localStorage when total changes
-  useEffect(() => {
-    localStorage.setItem('adoration-minutes', totalMinutes.toString());
-  }, [totalMinutes]);
-
-  const handleAdd = () => {
+  const handleAdd = async () => {
     const value = parseInt(inputValue, 10);
     if (isNaN(value) || value <= 0) return;
 
-    setIsAnimating(true);
     const minutesToAdd = unit === 'hours' ? value * 60 : value;
+
+    setIsAnimating(true);
     
-    setTimeout(() => {
-      setTotalMinutes(prev => prev + minutesToAdd);
+    setTimeout(async () => {
+      // Update database
+      const { error } = await supabase
+        .from('prayer_counters')
+        .update({ 
+          total_value: totalMinutes + minutesToAdd 
+        })
+        .eq('counter_type', 'adoration_minutes');
+
+      if (error) {
+        console.error('Error updating adoration count:', error);
+      }
+
       setInputValue('');
+      setUnit('hours');
       setIsAnimating(false);
     }, 200);
   };

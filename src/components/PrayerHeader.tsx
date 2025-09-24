@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import jyLogo from '@/assets/jy-logo.png';
 
 const PrayerHeader = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -17,6 +18,16 @@ const PrayerHeader = () => {
             : 'opacity-0 translate-y-8'
         }`}
       >
+        {/* JY Logo at the beginning */}
+        <div className="flex justify-center mb-8">
+          <div className="w-16 h-16 rounded-full bg-white shadow-lg flex items-center justify-center">
+            <img 
+              src={jyLogo} 
+              alt="Jesus Youth Logo" 
+              className="w-12 h-12 object-contain"
+            />
+          </div>
+        </div>
         <h1 className="text-7xl md:text-8xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-6">
           Veritas'25
         </h1>

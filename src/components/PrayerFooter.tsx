@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import jyLogo from '@/assets/jy-logo.png';
 
 const PrayerFooter = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -18,8 +19,12 @@ const PrayerFooter = () => {
         }`}
       >
         <div className="flex items-center justify-center gap-4 mb-4">
-          <div className="w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center shadow-glow">
-            <span className="text-primary-foreground font-bold text-xl">JY</span>
+          <div className="w-12 h-12 rounded-full bg-white shadow-glow flex items-center justify-center">
+            <img 
+              src={jyLogo} 
+              alt="Jesus Youth Logo" 
+              className="w-8 h-8 object-contain"
+            />
           </div>
           <div className="text-2xl font-bold text-primary">
             Veritas'25
