@@ -31,8 +31,8 @@ const PrayerHeader = () => {
 
         <div className="text-center">
           <h1 
-            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black bg-gradient-primary bg-clip-text text-transparent mb-4 md:mb-6" 
-            style={{ fontFamily: 'Dancing Script, Brush Script MT, cursive' }}
+            className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-normal text-white mb-6 md:mb-8" 
+            style={{ fontFamily: 'Kaushan Script, cursive' }}
           >
             Veritas'25
           </h1>
@@ -44,11 +44,11 @@ const PrayerHeader = () => {
                 : 'opacity-0 translate-y-8'
             }`}
           >
-            <p className="text-base sm:text-lg md:text-xl text-prayer-accent italic mb-2 md:mb-3 font-light px-2">
-              "And you will know the truth, and the truth will set you free"
+            <p className="text-lg sm:text-xl md:text-2xl text-white mb-2 md:mb-3 font-normal px-2" style={{ fontFamily: 'serif' }}>
+              "The Truth Will Set You Free"
             </p>
-            <p className="text-sm sm:text-base md:text-lg text-muted-foreground mb-4 md:mb-6 px-2">
-              — John 8:32
+            <p className="text-base sm:text-lg md:text-xl text-white mb-4 md:mb-6 px-2" style={{ fontFamily: 'serif' }}>
+              John 8:32
             </p>
           </div>
 
