@@ -31,7 +31,7 @@ const PrayerHeader = () => {
 
         <div className="text-center">
           <h1 
-            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-normal bg-gradient-primary bg-clip-text text-transparent mb-4 md:mb-6" 
+            className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-normal bg-gradient-primary bg-clip-text text-transparent mb-4 md:mb-6" 
             style={{ fontFamily: 'Dancing Script, Brush Script MT, cursive' }}
           >
             Veritas'25
