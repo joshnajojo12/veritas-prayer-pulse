@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Heart, Plus } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 const RosaryTracker = () => {
+  const [inputValue, setInputValue] = useState('');
   const [totalRosaries, setTotalRosaries] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -49,18 +51,21 @@ const RosaryTracker = () => {
   }, []);
 
   const handleAdd = async () => {
+    const value = parseInt(inputValue, 10);
+    if (isNaN(value) || value <= 0) return;
+
     setIsAnimating(true);
     
     try {
       const { error } = await supabase
         .from('prayer_counters')
         .update({ 
-          total_value: totalRosaries + 1 
+          total_value: totalRosaries + value 
         })
         .eq('counter_type', 'rosary_count');
 
-      if (error) {
-        console.error('Error updating rosary count:', error);
+      if (!error) {
+        setInputValue('');
       }
     } catch (error) {
       console.error('Error updating rosary count:', error);
@@ -90,13 +95,26 @@ const RosaryTracker = () => {
           </p>
         </div>
 
-        <Button 
-          onClick={handleAdd}
-          className="w-full bg-gradient-primary hover:shadow-glow hover:scale-105 transition-all duration-300 text-base md:text-lg py-6 md:py-8 font-semibold"
-        >
-          <Plus className="w-5 h-5 md:w-6 md:h-6 mr-2" />
-          Add 1 Rosary
-        </Button>
+        <div className="space-y-3 md:space-y-4">
+          <Input
+            type="number"
+            placeholder="Number of rosaries"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            className="bg-prayer-soft border-prayer-soft text-foreground placeholder:text-muted-foreground text-base md:text-lg py-4 md:py-6"
+            min="1"
+            step="1"
+          />
+
+          <Button 
+            onClick={handleAdd}
+            disabled={!inputValue || parseInt(inputValue, 10) <= 0}
+            className="w-full bg-gradient-primary hover:shadow-glow hover:scale-105 transition-all duration-300 text-base md:text-lg py-4 md:py-6 font-semibold"
+          >
+            <Plus className="w-4 h-4 md:w-5 md:h-5 mr-2" />
+            Add Rosaries
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
