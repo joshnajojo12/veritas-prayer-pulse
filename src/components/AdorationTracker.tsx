@@ -49,7 +49,7 @@ const AdorationTracker = () => {
   }, []);
 
   const handleAdd = async () => {
-    const minutesToAdd = 10;
+    const minutesToAdd = 5;
 
     setIsAnimating(true);
 
@@ -101,7 +101,7 @@ const AdorationTracker = () => {
             className="w-full bg-gradient-primary hover:shadow-glow hover:scale-105 transition-all duration-300 text-base md:text-lg py-4 md:py-6 font-semibold"
           >
             <Plus className="w-4 h-4 md:w-5 md:h-5 mr-2" />
-            Add 10 Minutes
+            Add 5 Minutes
           </Button>
         </div>
       </CardContent>
