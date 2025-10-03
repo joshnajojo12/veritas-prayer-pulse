@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Clock, Plus } from 'lucide-react';
+import { Clock, Plus, Check } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 const AdorationTracker = () => {
   const [totalMinutes, setTotalMinutes] = useState(0);
+  const [pendingMinutes, setPendingMinutes] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
   // Load from database and set up real-time updates
@@ -48,25 +49,27 @@ const AdorationTracker = () => {
     };
   }, []);
 
-  const handleAdd = async () => {
-    const minutesToAdd = 5;
-
+  const handleAdd = () => {
+    setPendingMinutes(prev => prev + 5);
     setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 200);
+  };
+
+  const handleSubmit = async () => {
+    if (pendingMinutes === 0) return;
 
     const { error } = await supabase
       .from('prayer_counters')
       .update({
-        total_value: totalMinutes + minutesToAdd
+        total_value: totalMinutes + pendingMinutes
       })
       .eq('counter_type', 'adoration_minutes');
 
     if (error) {
       console.error('Error updating adoration count:', error);
+    } else {
+      setPendingMinutes(0);
     }
-
-    setTimeout(() => {
-      setIsAnimating(false);
-    }, 200);
   };
 
   const formatTime = (minutes: number) => {
@@ -93,6 +96,17 @@ const AdorationTracker = () => {
             {formatTime(totalMinutes)}
           </div>
           <p className="text-sm md:text-base text-muted-foreground">Total time in adoration</p>
+
+          {pendingMinutes > 0 && (
+            <div className="mt-4 p-3 bg-prayer-accent/10 rounded-lg border border-prayer-accent/20">
+              <p className="text-lg font-semibold text-prayer-accent">
+                Pending: {formatTime(pendingMinutes)}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Click Submit to save
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="space-y-3 md:space-y-4">
@@ -103,6 +117,16 @@ const AdorationTracker = () => {
             <Plus className="w-4 h-4 md:w-5 md:h-5 mr-2" />
             Add 5 Minutes
           </Button>
+
+          {pendingMinutes > 0 && (
+            <Button
+              onClick={handleSubmit}
+              className="w-full bg-green-600 hover:bg-green-700 hover:scale-105 transition-all duration-300 text-base md:text-lg py-4 md:py-6 font-semibold"
+            >
+              <Check className="w-4 h-4 md:w-5 md:h-5 mr-2" />
+              Submit
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
