@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Clock, Plus } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 const AdorationTracker = () => {
-  const [inputValue, setInputValue] = useState('');
   const [unit, setUnit] = useState('minutes');
   const [totalMinutes, setTotalMinutes] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -53,15 +51,11 @@ const AdorationTracker = () => {
   }, []);
 
   const handleAdd = async () => {
-    const value = parseInt(inputValue, 10);
-    if (isNaN(value) || value <= 0) return;
-
-    const minutesToAdd = unit === 'hours' ? value * 60 : value;
+    const minutesToAdd = unit === 'hours' ? 60 : 10;
 
     setIsAnimating(true);
     
     setTimeout(async () => {
-      // Update database
       const { error } = await supabase
         .from('prayer_counters')
         .update({ 
@@ -73,8 +67,6 @@ const AdorationTracker = () => {
         console.error('Error updating adoration count:', error);
       }
 
-      setInputValue('');
-      setUnit('minutes');
       setIsAnimating(false);
     }, 200);
   };
@@ -106,34 +98,22 @@ const AdorationTracker = () => {
         </div>
 
         <div className="space-y-3 md:space-y-4">
-          <div className="flex gap-2 flex-col sm:flex-row">
-            <Input
-              type="number"
-              placeholder="Enter amount"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              className="bg-prayer-soft border-prayer-soft text-foreground placeholder:text-muted-foreground flex-1 text-base md:text-lg py-4 md:py-6"
-              min="1"
-              step="1"
-            />
-            <Select value={unit} onValueChange={setUnit}>
-              <SelectTrigger className="w-full sm:w-40 bg-prayer-soft border-prayer-soft text-base md:text-lg py-4 md:py-6 font-semibold">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-background border-border z-50">
-                <SelectItem value="hours" className="text-base md:text-lg py-2">Hours</SelectItem>
-                <SelectItem value="minutes" className="text-base md:text-lg py-2">Minutes</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <Select value={unit} onValueChange={setUnit}>
+            <SelectTrigger className="w-full bg-prayer-soft border-prayer-soft text-lg md:text-xl py-6 md:py-8 font-bold">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-background border-border z-50">
+              <SelectItem value="minutes" className="text-lg md:text-xl py-3 font-semibold">Minutes (+10)</SelectItem>
+              <SelectItem value="hours" className="text-lg md:text-xl py-3 font-semibold">Hours (+1)</SelectItem>
+            </SelectContent>
+          </Select>
 
           <Button 
             onClick={handleAdd}
-            disabled={!inputValue || parseInt(inputValue, 10) <= 0}
-            className="w-full bg-gradient-primary hover:shadow-glow hover:scale-105 transition-all duration-300 text-base md:text-lg py-4 md:py-6 font-semibold"
+            className="w-full bg-gradient-primary hover:shadow-glow hover:scale-105 transition-all duration-300 text-base md:text-lg py-6 md:py-8 font-semibold"
           >
-            <Plus className="w-4 h-4 md:w-5 md:h-5 mr-2" />
-            Add Time
+            <Plus className="w-5 h-5 md:w-6 md:h-6 mr-2" />
+            Add {unit === 'hours' ? '1 Hour' : '10 Minutes'}
           </Button>
         </div>
       </CardContent>
