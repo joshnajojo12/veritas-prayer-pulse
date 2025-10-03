@@ -1,14 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Clock, Plus } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 const AdorationTracker = () => {
-  const [inputValue, setInputValue] = useState('');
-  const [unit, setUnit] = useState('minutes');
   const [totalMinutes, setTotalMinutes] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -53,28 +49,22 @@ const AdorationTracker = () => {
   }, []);
 
   const handleAdd = async () => {
-    const value = parseInt(inputValue, 10);
-    if (isNaN(value) || value <= 0) return;
-
-    const minutesToAdd = unit === 'hours' ? value * 60 : value;
+    const minutesToAdd = 10;
 
     setIsAnimating(true);
-    
-    setTimeout(async () => {
-      // Update database
-      const { error } = await supabase
-        .from('prayer_counters')
-        .update({ 
-          total_value: totalMinutes + minutesToAdd 
-        })
-        .eq('counter_type', 'adoration_minutes');
 
-      if (error) {
-        console.error('Error updating adoration count:', error);
-      }
+    const { error } = await supabase
+      .from('prayer_counters')
+      .update({
+        total_value: totalMinutes + minutesToAdd
+      })
+      .eq('counter_type', 'adoration_minutes');
 
-      setInputValue('');
-      setUnit('minutes');
+    if (error) {
+      console.error('Error updating adoration count:', error);
+    }
+
+    setTimeout(() => {
       setIsAnimating(false);
     }, 200);
   };
@@ -106,34 +96,12 @@ const AdorationTracker = () => {
         </div>
 
         <div className="space-y-3 md:space-y-4">
-          <div className="flex gap-2 flex-col sm:flex-row">
-            <Input
-              type="number"
-              placeholder="Enter amount"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              className="bg-prayer-soft border-prayer-soft text-foreground placeholder:text-muted-foreground flex-1 text-base md:text-lg py-4 md:py-6"
-              min="1"
-              step="1"
-            />
-            <Select value={unit} onValueChange={setUnit}>
-              <SelectTrigger className="w-full sm:w-40 bg-prayer-soft border-prayer-soft text-base md:text-lg py-4 md:py-6 font-semibold">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-background border-border z-50">
-                <SelectItem value="hours" className="text-base md:text-lg py-2">Hours</SelectItem>
-                <SelectItem value="minutes" className="text-base md:text-lg py-2">Minutes</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <Button 
+          <Button
             onClick={handleAdd}
-            disabled={!inputValue || parseInt(inputValue, 10) <= 0}
             className="w-full bg-gradient-primary hover:shadow-glow hover:scale-105 transition-all duration-300 text-base md:text-lg py-4 md:py-6 font-semibold"
           >
             <Plus className="w-4 h-4 md:w-5 md:h-5 mr-2" />
-            Add Time
+            Add 10 Minutes
           </Button>
         </div>
       </CardContent>
