@@ -98,9 +98,12 @@ const AdorationTracker = () => {
       </CardHeader>
       
       <CardContent className="space-y-4 md:space-y-6 px-4 md:px-6">
-        <div className="text-center">
-          <div className={`text-3xl sm:text-4xl md:text-5xl font-bold text-primary mb-2 ${isAnimating ? 'counting-up' : ''}`}>
+        <div className="text-center space-y-2">
+          <div className={`text-3xl sm:text-4xl md:text-5xl font-bold text-primary ${isAnimating ? 'counting-up' : ''}`}>
             {formatTime(totalMinutes)}
+          </div>
+          <div className="text-lg md:text-xl text-muted-foreground">
+            ({totalMinutes.toLocaleString()} minutes)
           </div>
           <p className="text-sm md:text-base text-muted-foreground">Total time in adoration</p>
         </div>
