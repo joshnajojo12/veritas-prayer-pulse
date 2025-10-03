@@ -98,12 +98,9 @@ const AdorationTracker = () => {
       </CardHeader>
       
       <CardContent className="space-y-4 md:space-y-6 px-4 md:px-6">
-        <div className="text-center space-y-2">
-          <div className={`text-3xl sm:text-4xl md:text-5xl font-bold text-primary ${isAnimating ? 'counting-up' : ''}`}>
+        <div className="text-center">
+          <div className={`text-3xl sm:text-4xl md:text-5xl font-bold text-primary mb-2 ${isAnimating ? 'counting-up' : ''}`}>
             {formatTime(totalMinutes)}
-          </div>
-          <div className="text-lg md:text-xl text-muted-foreground">
-            ({totalMinutes.toLocaleString()} minutes)
           </div>
           <p className="text-sm md:text-base text-muted-foreground">Total time in adoration</p>
         </div>
@@ -115,17 +112,17 @@ const AdorationTracker = () => {
               placeholder="Enter amount"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              className="bg-prayer-soft border-prayer-soft text-foreground placeholder:text-muted-foreground flex-1"
+              className="bg-prayer-soft border-prayer-soft text-foreground placeholder:text-muted-foreground flex-1 text-base md:text-lg py-4 md:py-6"
               min="1"
               step="1"
             />
             <Select value={unit} onValueChange={setUnit}>
-              <SelectTrigger className="w-full sm:w-32 bg-prayer-soft border-prayer-soft">
+              <SelectTrigger className="w-full sm:w-40 bg-prayer-soft border-prayer-soft text-base md:text-lg py-4 md:py-6 font-semibold">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="hours">Hours</SelectItem>
-                <SelectItem value="minutes">Minutes</SelectItem>
+              <SelectContent className="bg-background border-border z-50">
+                <SelectItem value="hours" className="text-base md:text-lg py-2">Hours</SelectItem>
+                <SelectItem value="minutes" className="text-base md:text-lg py-2">Minutes</SelectItem>
               </SelectContent>
             </Select>
           </div>
