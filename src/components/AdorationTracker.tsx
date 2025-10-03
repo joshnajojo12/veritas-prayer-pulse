@@ -8,7 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 const AdorationTracker = () => {
   const [inputValue, setInputValue] = useState('');
-  const [unit, setUnit] = useState('hours');
+  const [unit, setUnit] = useState('minutes');
   const [totalMinutes, setTotalMinutes] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -74,7 +74,7 @@ const AdorationTracker = () => {
       }
 
       setInputValue('');
-      setUnit('hours');
+      setUnit('minutes');
       setIsAnimating(false);
     }, 200);
   };
