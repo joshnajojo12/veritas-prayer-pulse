@@ -118,7 +118,7 @@ const RosaryTracker = () => {
           {pendingRosaries > 0 && (
             <Button
               onClick={handleSubmit}
-              className="w-full bg-green-600 hover:bg-green-700 hover:scale-105 transition-all duration-300 text-base md:text-lg py-4 md:py-6 font-semibold"
+              className="w-full bg-gradient-primary hover:shadow-glow hover:scale-105 transition-all duration-300 text-base md:text-lg py-4 md:py-6 font-semibold"
             >
               <Check className="w-4 h-4 md:w-5 md:h-5 mr-2" />
               Submit
