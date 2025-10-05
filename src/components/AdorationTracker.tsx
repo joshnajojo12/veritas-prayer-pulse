@@ -55,6 +55,12 @@ const AdorationTracker = () => {
     setTimeout(() => setIsAnimating(false), 200);
   };
 
+  const handleAddHour = () => {
+    setPendingMinutes(prev => prev + 60);
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 200);
+  };
+
   const handleSubmit = async () => {
     if (pendingMinutes === 0) return;
 
@@ -110,13 +116,23 @@ const AdorationTracker = () => {
         </div>
 
         <div className="space-y-3 md:space-y-4">
-          <Button
-            onClick={handleAdd}
-            className="w-full bg-gradient-primary hover:shadow-glow hover:scale-105 transition-all duration-300 text-base md:text-lg py-4 md:py-6 font-semibold"
-          >
-            <Plus className="w-4 h-4 md:w-5 md:h-5 mr-2" />
-            Add 5 Minutes
-          </Button>
+          <div className="grid grid-cols-2 gap-3">
+            <Button
+              onClick={handleAdd}
+              className="w-full bg-gradient-primary hover:shadow-glow hover:scale-105 transition-all duration-300 text-base md:text-lg py-4 md:py-6 font-semibold"
+            >
+              <Plus className="w-4 h-4 md:w-5 md:h-5 mr-2" />
+              +5 Min
+            </Button>
+            
+            <Button
+              onClick={handleAddHour}
+              className="w-full bg-gradient-primary hover:shadow-glow hover:scale-105 transition-all duration-300 text-base md:text-lg py-4 md:py-6 font-semibold"
+            >
+              <Plus className="w-4 h-4 md:w-5 md:h-5 mr-2" />
+              +1 Hour
+            </Button>
+          </div>
 
           {pendingMinutes > 0 && (
             <Button
